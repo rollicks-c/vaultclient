@@ -14,6 +14,8 @@ type Client struct {
 
 type Option func(c *Client)
 
+type Prompter func() (string, error)
+
 func NewClient(addr string, options ...Option) (*Client, error) {
 
 	// create api client
@@ -96,7 +98,7 @@ func WithToken(token string) Option {
 	}
 }
 
-func WithTokenPrompt(token string, prompter func() (string, error)) Option {
+func WithTokenPrompt(token string, prompter Prompter) Option {
 	tp := &tokenProviderDirect{
 		token:    token,
 		prompter: prompter,

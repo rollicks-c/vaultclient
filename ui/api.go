@@ -2,11 +2,12 @@ package ui
 
 import (
 	"fmt"
+	"github.com/rollicks-c/vaultclient/vault"
 	"os/exec"
 	"runtime"
 )
 
-func CreateVaultTokenPrompter(vaultAddr string) func() (string, error) {
+func CreateVaultTokenPrompter(vaultAddr string) vault.Prompter {
 
 	return func() (string, error) {
 		if err := OpenURL(vaultAddr); err != nil {

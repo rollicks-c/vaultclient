@@ -2,6 +2,7 @@ package vault
 
 import (
 	"fmt"
+	"path"
 	"strings"
 )
 
@@ -32,12 +33,22 @@ func (c Client) AsProvider() SecretsProvider {
 }
 
 func (p SecretsProvider) LoadSecret(uri string) (string, error) {
-	secret, err := p.LoadSecret(uri)
+	vc := Client(p)
+
+	vtPath := path.Dir(uri)
+	vtKey := path.Base(uri)
+
+	secret, err := vc.LoadSecret(vtPath)
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("%v", secret), nil
 
+	value, ok := secret.GetItem(vtKey)
+	if !ok {
+		return "", fmt.Errorf("key not found: %s", vtKey)
+	}
+
+	return value, nil
 }
 
 func (s Secret) GetItem(key string) (string, bool) {
